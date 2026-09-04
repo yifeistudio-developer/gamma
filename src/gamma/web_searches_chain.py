@@ -1,0 +1,21 @@
+from gamma.llm_models import get_llm
+from gamma.utilties import to_obj
+from gamma.prompts import WEB_SEARCH_PROMPT_TEMPLATE
+from langchain_core.output_parsers import StrOutputParser
+from langchain_core.runnables import RunnableLambda
+
+NUM_SEARCH_QUERIES = 2
+
+web_searches_chain = (
+    RunnableLambda(
+        lambda x:
+        {
+            'assistant_instructions': x['assistant_instructions'],
+            'num_search_queries': NUM_SEARCH_QUERIES,
+            'user_question': x['user_question'],
+        }
+    ) | WEB_SEARCH_PROMPT_TEMPLATE | get_llm()| StrOutputParser() | to_obj
+)
+
+
+
